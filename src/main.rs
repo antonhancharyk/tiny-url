@@ -1,9 +1,13 @@
 use rusqlite::Result;
 
 mod db;
+mod server;
 
-fn main() -> Result<()> {
-    let _ = db::start().unwrap();
+// fn main() -> Result<()> {
+fn main() {
+    // let _ = db::start().unwrap();
 
-    Ok(())
+    // Ok(());
+
+    server::run();
 }
