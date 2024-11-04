@@ -1,44 +1,22 @@
-use rusqlite::{Connection, Result};
+use rusqlite::{params, Connection};
 
-#[derive(Debug)]
-struct Person {
-    id: i32,
-    name: String,
-    data: Option<Vec<u8>>,
+pub fn init_db() -> Connection {
+    let conn = Connection::open_in_memory().expect("Failed to initialize database.");
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS urls (
+            id INTEGER PRIMARY KEY,
+            url TEXT NOT NULL,
+            tiny_url TEXT NOT NULL UNIQUE
+        )",
+        [],
+    )
+    .expect("Failed to create table.");
+    conn
 }
 
-pub fn start() -> Result<()> {
-    let conn = Connection::open("tiny_url.db")?;
-
+pub fn insert_url(conn: &Connection, url: &str, tiny_url: &str) -> rusqlite::Result<usize> {
     conn.execute(
-        "CREATE TABLE IF NOT EXISTS person (
-            id    INTEGER PRIMARY KEY,
-            name  TEXT NOT NULL,
-            data  BLOB
-        )",
-        (),
-    )?;
-    let me = Person {
-        id: 0,
-        name: "Steven".to_string(),
-        data: None,
-    };
-    conn.execute(
-        "INSERT INTO person (name, data) VALUES (?1, ?2)",
-        (&me.name, &me.data),
-    )?;
-
-    let mut stmt = conn.prepare("SELECT id, name, data FROM person")?;
-    let person_iter = stmt.query_map([], |row| {
-        Ok(Person {
-            id: row.get(0)?,
-            name: row.get(1)?,
-            data: row.get(2)?,
-        })
-    })?;
-
-    for person in person_iter {
-        println!("Found person {:?}", person.unwrap());
-    }
-    Ok(())
+        "INSERT INTO urls (url, tiny_url) VALUES (?1, ?2)",
+        params![url, tiny_url],
+    )
 }

@@ -17,3 +17,33 @@ async fn serve_html() -> Result<impl warp::Reply, Infallible> {
         )),
     }
 }
+
+use super::db::{Database, User};
+use warp::http::StatusCode;
+use warp::reply::Json;
+use warp::{Rejection, Reply};
+
+// Handler to add a new user
+pub async fn add_user(db: Database, new_user: User) -> Result<impl Reply, Rejection> {
+    match db.add_user(new_user) {
+        Ok(_) => Ok(warp::reply::with_status(
+            "User added successfully",
+            StatusCode::CREATED,
+        )),
+        Err(err) => Ok(warp::reply::with_status(
+            format!("Failed to add user: {}", err),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        )),
+    }
+}
+
+// Handler to get all users
+pub async fn get_users(db: Database) -> Result<Json, Rejection> {
+    match db.get_users() {
+        Ok(users) => Ok(warp::reply::json(&users)),
+        Err(err) => Ok(warp::reply::with_status(
+            format!("Failed to fetch users: {}", err),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        )),
+    }
+}

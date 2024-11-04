@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Short URL</title>
+</head>
+<body>
+    <h1>Create a Short URL</h1>
+    {{#if message}}
+        <p>{{message}}</p>
+    {{/if}}
+    <form action="/create" method="post">
+        <label for="url">Original URL:</label>
+        <input type="text" name="url" id="url" required>
+        <label for="tiny_url">Tiny URL:</label>
+        <input type="text" name="tiny_url" id="tiny_url" required>
+        <button type="submit">Create</button>
+    </form>
+</body>
+</html>
