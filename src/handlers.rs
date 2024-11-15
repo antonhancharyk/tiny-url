@@ -9,6 +9,7 @@ use warp::{Rejection, Reply};
 pub async fn show_form<'a>(handlebars: Arc<Handlebars<'a>>) -> Result<impl Reply, Rejection> {
     let data: HashMap<String, String> = HashMap::new();
     let rendered = handlebars.render("form", &data).unwrap();
+
     Ok(warp::reply::html(rendered))
 }
 
@@ -23,5 +24,6 @@ pub async fn create_short_url<'a>(
     data.insert("message", response);
 
     let rendered = handlebars.render("form", &data).unwrap();
+
     Ok(warp::reply::html(rendered))
 }

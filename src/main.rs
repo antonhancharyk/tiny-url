@@ -10,7 +10,7 @@ use warp::Filter;
 
 #[tokio::main]
 async fn main() {
-    let db = Arc::new(Mutex::new(db::init_db()));
+    let db = Arc::new(Mutex::new(db::init()));
     let handlebars = Arc::new({
         let mut handlebars = Handlebars::new();
         handlebars
